@@ -50,6 +50,23 @@ const App = () => {
     setBoard(() => generateInitialBoard())
   }
 
+  const nextRound = () => {
+    let idx = 0
+    do {
+      idx = Math.floor(Math.random() * 16)
+      console.log(idx)
+      console.log(board[idx])
+    } while (board[idx] != null)
+    let num = generateRandomNum()
+    handleUpdate(idx, num)
+  }
+
+  const handleUpdate = (index, num) => {
+    const newBoard = [...board]
+    newBoard[index] = num
+    setBoard(newBoard)
+  }
+
   const handleKeyDown = (e) => {
     switch (e.key) {
       case "ArrowDown":
@@ -69,6 +86,9 @@ const App = () => {
     }
   }
 
+  
+
+
   return (
     <div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
       <>
@@ -79,11 +99,14 @@ const App = () => {
         <Button name="up" />
         <Button name="down" />
         <Button name="reset" handleClick={resetGame} />
+        <Button name="next" handleClick={nextRound} />
       </div>
       </>
     </div>
   );
 }
+
+
 
 const generateInitialBoard = () => {
   let num = Math.floor(Math.random() * 16)
@@ -92,16 +115,18 @@ const generateInitialBoard = () => {
     secondNum = Math.floor(Math.random() * 16)
   }
 
-  let tempBoard = Array(16).fill(null)
-  tempBoard[num] = 2
-  tempBoard[secondNum] = 2
-  return (tempBoard)
+  let newBoard = Array(16).fill(null)
+  newBoard[num] = 2
+  newBoard[secondNum] = 2
+  return newBoard
 }
 
-// const generateRandomNum = () => {
-//   const numIsTwo = Math.random() >= 0.5
-//   return numIsTwo ? 2 : 4
-// }
+const generateRandomNum = () => {
+  const numIsTwo = Math.random() >= 0.5
+  return numIsTwo ? 2 : 4
+}
+
+
 
 
 export default App;

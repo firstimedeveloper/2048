@@ -8,7 +8,7 @@ const Box = (props) => {
   }
   
   return (
-    <div className="flex justify-center items-center w-24 h-24 border-solid border-2"
+    <div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2 hover:bg-gray-600"
       onClick={handleClick}>
       {!hidden && props.num}
     </div>
@@ -21,24 +21,22 @@ const Grid = () => {
       <Box num={i} ></Box>
     );
   };
+  let row = [0,0,0,0]
+  let col = [0,0,0,0]
   
   return (
     <div className="flex flex-row justify-center item-center w-full">
-      <div className="grid-flow-row">
-      {renderSquare(0)}
-      {renderSquare(1)}
-      {renderSquare(2)}
-      </div>
-      <div className="grid-flow-row">
-      {renderSquare(3)}
-      {renderSquare(4)}
-      {renderSquare(5)}
-      </div>
-      <div className="grid-flow-row">
-      {renderSquare(6)}
-      {renderSquare(7)}
-      {renderSquare(8)}
-      </div>
+      {row.map((_,i) => {
+        return (
+          <div key={i}>
+            {col.map((_,j) => {
+          return (
+            <Box key={i*4+j+1} num={i*4+j+1}/>
+          )
+        })}
+          </div>
+        )
+      })}
     </div>
   )
 }

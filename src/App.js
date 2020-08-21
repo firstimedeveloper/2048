@@ -2,61 +2,51 @@ import React, {useState} from 'react';
 
 
 const Box = (props) => {
-  const [hidden, setHidden] = useState(false)
-  const handleClick = () => {
-    setHidden(!hidden)
-  }
-  
   return (
-    <div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2"
-      onClick={handleClick}>
-      {!hidden && props.num}
+    <div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2">
+    {props.num}
     </div>
   )
 }
 
-const Grid = () => {
-  let row = [0,0,0,0]
-  let col = [0,0,0,0]
-  
+const Board = (props) => {
 /* 
-[0,0][1,0][2,0][3,0]
-[0,1][1,1][2,1][3,1]
-[0,2][1,2][2,2][3,2]
-[0,3][1,3][2,3][3,3]
+ 0  1  2  3
+ 4  5  6  7
+ 8  9  10 11
+ 12 13 14 15
 */
 
+
   return (
-    <div className="flex flex-row justify-center items-center">
-      {row.map((_,i) => {
-        return (
-          <div key={i}>
-            {col.map((_,j) => {
-          return (
-            <Box key={i*4+j+1} num={i*4+j+1}/>
-          )
-        })}
-          </div>
-        )
+    <div className="grid grid-cols-4">
+      {props.board.map((v,i) => {
+          return <Box key={i} value={v} num={i}/>
       })}
     </div>
   )
 }
 
 const Button = (props) => {
+  const handleClick = () => {
+    //TODO this will be the swipe actions in the future.
+  }
+  
   return (
-    <button className="py-2 px-4 bg-blue-400 text-white mx-1">
+    <button className="py-2 px-4 bg-blue-400 text-white mx-1" onClick={handleClick}>
       {props.name}
     </button>
   )
 }
 
 const App = () => {
-  
+  const [board, setBoard] = useState(Array(16).fill(null))
+
+
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="flex flex-col justify-evenly items-center h-screen">
       <>
-      <Grid />
+      <Board board={board} setBoard={setBoard}/>
       <div>
         <Button name="Left" />
         <Button name="right" />

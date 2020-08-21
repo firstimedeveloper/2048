@@ -46,19 +46,25 @@ const Button = (props) => {
 const App = () => {
   const [board, setBoard] = useState(() => generateInitialBoard())
 
+  var gameOver = false
+
+  // resets board
   const resetGame = () => {
     setBoard(() => generateInitialBoard())
   }
 
+  // button that triggers the next round
   const nextRound = () => {
-    let idx = 0
-    do {
-      idx = Math.floor(Math.random() * 16)
-      console.log(idx)
-      console.log(board[idx])
-    } while (board[idx] != null)
-    let num = generateRandomNum()
-    handleUpdate(idx, num)
+    if (!gameOver) {
+      let idx = 0
+      do {
+        idx = Math.floor(Math.random() * 16)
+        console.log(idx)
+        console.log(board[idx])
+      } while (board[idx] != null)
+      let num = generateRandomNum()
+      handleUpdate(idx, num)
+    }
   }
 
   const handleUpdate = (index, num) => {
@@ -70,29 +76,26 @@ const App = () => {
   const handleKeyDown = (e) => {
     switch (e.key) {
       case "ArrowDown":
-        alert(e.key + "pressed!")
+        nextRound()
         break;
       case "ArrowUp":
-        alert(e.key + "pressed!")
+        nextRound()
         break;
       case "ArrowLeft":
-        alert(e.key + "pressed!")
+        nextRound()
         break;
       case "ArrowRight":
-        alert(e.key + "pressed!")
+        nextRound()
         break;
       default:
         break;
     }
   }
 
-  
-
-
   return (
     <div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
       <>
-      <Board board={board} setBoard={setBoard}/>
+      {!gameOver && <Board board={board} setBoard={setBoard}/>}
       <div>
         <Button name="Left" />
         <Button name="right" />
@@ -105,8 +108,6 @@ const App = () => {
     </div>
   );
 }
-
-
 
 const generateInitialBoard = () => {
   let num = Math.floor(Math.random() * 16)

@@ -16,11 +16,6 @@ const Box = (props) => {
 }
 
 const Grid = () => {
-  const renderSquare = (i) => {
-    return (
-      <Box num={i} ></Box>
-    );
-  };
   let row = [0,0,0,0]
   let col = [0,0,0,0]
   

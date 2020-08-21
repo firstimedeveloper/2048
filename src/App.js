@@ -20,7 +20,7 @@ const Grid = () => {
   let col = [0,0,0,0]
   
   return (
-    <div className="flex flex-row justify-center item-center w-full">
+    <div className="flex flex-row justify-center items-center h-screen">
       {row.map((_,i) => {
         return (
           <div key={i}>
@@ -39,11 +39,7 @@ const Grid = () => {
 const App = () => {
   
   return (
-    <div className="flex min-h-screen justify-center item-center bg-grey-200 p-20">
-      <div className="flex shadow-lg justify-center item-center w-full p-5">
-        <Grid />
-      </div>
-    </div>
+    <Grid />
   );
 }
 

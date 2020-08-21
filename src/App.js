@@ -8,7 +8,7 @@ const Box = (props) => {
   }
   
   return (
-    <div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2 hover:bg-gray-600"
+    <div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2"
       onClick={handleClick}>
       {!hidden && props.num}
     </div>

@@ -38,7 +38,7 @@ const Button = (props) => {
   }
   
   return (
-    <button className={`py-2 px-4 bg-${color} text-white mx-1`} onClick={props.handleClick}>
+    <button className={`py-2 px-4 bg-${color} text-white mx-1`} onClick={props.handleClick? props.handleClick : handleClick}>
       {props.name}
     </button>
   )

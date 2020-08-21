@@ -21,7 +21,6 @@ const Board = (props) => {
   return (
     <div className="grid grid-cols-4">
       {props.board.map((v,i) => {
-          console.log(v)
           return <Box key={i} value={v}/>
       })}
     </div>
@@ -51,8 +50,27 @@ const App = () => {
     setBoard(() => generateInitialBoard())
   }
 
+  const handleKeyDown = (e) => {
+    switch (e.key) {
+      case "ArrowDown":
+        alert(e.key + "pressed!")
+        break;
+      case "ArrowUp":
+        alert(e.key + "pressed!")
+        break;
+      case "ArrowLeft":
+        alert(e.key + "pressed!")
+        break;
+      case "ArrowRight":
+        alert(e.key + "pressed!")
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
-    <div className="flex flex-col justify-evenly items-center h-screen">
+    <div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
       <>
       <Board board={board} setBoard={setBoard}/>
       <div>

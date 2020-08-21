@@ -13,8 +13,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "tailwindcss": "^1.6.2",
-    "typescript": "^3.7.5"
+    "tailwindcss": "^1.6.2"
   },
   "scripts": {
     "start": "npm run tailwind:css && react-scripts start",

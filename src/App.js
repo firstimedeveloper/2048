@@ -61,6 +61,10 @@ const Box = (props) => {
 const Button = (props) => {
 	const handleClick = () => {
 		//TODO this will be the swipe actions in the future.
+			if (props.wait) {
+				return
+			}
+			props.move(props.name)
 	}
 	let color = "blue-400"
 	if (props.name === "reset") {
@@ -201,10 +205,10 @@ const App = () => {
 			<>
 			{!gameOver && <Board  wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
 			<div>
-				<Button name="Left" />
-				<Button name="right" />
-				<Button name="up" />
-				<Button name="down" />
+				<Button name="left" move={setDirection} wait={wait}/>
+				<Button name="right" move={setDirection} wait={wait}/>
+				<Button name="up" move={setDirection} wait={wait}/>
+				<Button name="down" move={setDirection} wait={wait}/>
 				<Button name="reset" handleClick={resetGame} />
 				<Button name="next" />
 			</div>
@@ -283,7 +287,7 @@ const addRow = (row, move) => {
 }
 
 const calculateGameOver = (board) => {
-	
+
 }
 
 const moveRow = (row, move) => {

@@ -12,10 +12,49 @@ const Box = (props) => {
 	// })
 	
 	// return <animated.div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2" style={animate}>{props.value}</animated.div>
-	
+	var color
+	switch (props.value) {
+		case 2:
+			color = "bg-orange-300" 
+			break;
+		case 4:
+			color = "bg-orange-400"	
+			break;
+		case 8:
+			color = "bg-orange-500"
+			break;	
+		case 16:
+			color = "bg-red-500"
+			break;
+		case 32:
+			color = "bg-red-600"
+			break;
+		case 64:
+			color = "bg-red-700"
+			break;
+		case 128:
+			color = "bg-purple-700"
+			break;
+		case 256:
+			color = "bg-purple-800"
+			break;
+		case 512:
+			color = "bg-yellow-400"
+			break;
+		case 1024:
+			color = "bg-yellow-500"
+			break;
+		case 2048:
+			color = "bg-yellow-600"
+			break;	
+		default:
+			color = "bg-grey-100"
+			break;
+	}
+
 	return (
 		
-		<div className="flex justify-center items-center w-24 h-24 bg-blue-400 text-white text-2xl border-2">{props.value}</div>
+		<div className={`flex justify-center items-center w-24 h-24 ${color} text-white text-6xl font-semibold border-2 border-grey-200`}>{props.value}</div>
 	)
 }
 
@@ -78,7 +117,7 @@ const Board = (props) => {
 	return (
 
 		
-		<div className="grid grid-cols-4 border-8">
+		<div className="grid grid-cols-4 border-8 border-gray-700">
 			{props.board.map((v,i) => {
 					return <Box key={i} value={v}/>
 			})}

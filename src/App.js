@@ -54,11 +54,13 @@ const Board = (props) => {
 				}
 			}	
 		}
-		// if (JSON.stringify(board) !== JSON.stringify(newBoard)) {
-		props.setBoard(newBoard)
-		// }
+		if (JSON.stringify(props.board) !== JSON.stringify(newBoard)) {
+			console.log(props.board)
+			console.log(newBoard)
+			props.setBoard(newBoard)
+			props.setWait(true)
+		}
 		props.setDirection("")
-		props.setWait(true)
 	}
 	
 

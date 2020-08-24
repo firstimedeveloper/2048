@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 // import {useSpring, animated} from 'react-spring'
 
 const Box = (props) => {
@@ -86,30 +86,8 @@ const Board = (props) => {
  12 13 14 15
 */	
 	if (!props.wait && props.direction !== "") {
-		const newBoard = [...props.board]
-		for(let i=0;i<4;i++) {
-			let row = []
-			for(let j=0;j<4;j++) {
-				if (props.direction === "left" || props.direction === "right")
-					row.push(props.board[(i*4)+j])
-				if (props.direction === "up" || props.direction === "down")
-					row.push(props.board[(j*4)+i])
-			}
-			if (row != null && row.length > 0) {
-				addRow(row, props.direction)
-				moveRow(row, props.direction)
-			
-				for(let j=0;j<4;j++) {
-					if (props.direction === "left" || props.direction === "right")
-						newBoard[(i*4)+j] = row[j]
-					if (props.direction === "up" || props.direction === "down")
-						newBoard[(j*4)+i] = row[j]
-				}
-			}	
-		}
+		const newBoard = renderBoard(props.board, props.direction)
 		if (JSON.stringify(props.board) !== JSON.stringify(newBoard)) {
-			console.log(props.board)
-			console.log(newBoard)
 			props.setBoard(newBoard)
 			props.setWait(true)
 		}
@@ -136,17 +114,10 @@ const App = () => {
 	const [gameOver, setGameOver] = useState(false)
 	const [wait, setWait] = useState(false)
 
-	const timeoutIdRef = useRef();
-	const cancel = useCallback(
-		() => {
-			const timeoutId = timeoutIdRef.current;
-			if (timeoutId) {
-				timeoutIdRef.current = undefined;
-				clearTimeout(timeoutId);
-			}
-		},
-		[timeoutIdRef],
-	);
+	if (calculateGameOver(board)) {
+		setGameOver(true)
+	}
+	
 	useEffect(() => {
 		if (wait) {
 			let idx = 0
@@ -158,19 +129,7 @@ const App = () => {
 			newBoard[idx] = num
 			setWait(false)
 			setBoard(newBoard)
-			// timeoutIdRef.current = setTimeout(() => {
-			// 	let idx = 0
-			// 	do {
-			// 		idx = Math.floor(Math.random() * 16)
-			// 	} while (board[idx] != null)
-			// 	let num = generateRandomNum()
-			// 	const newBoard = [...board]
-			// 	newBoard[idx] = num
-			// 	setWait(false)
-			// 	setBoard(newBoard)
-			// }, 500);
 		}
-		//return cancel;
 	}, [board, wait]);	
 
 
@@ -217,34 +176,6 @@ const App = () => {
 	);
 }
 
-const useTimeout = (
-	callback, // function to call. No args passed.
-	// if you create a new callback each render, then previous callback will be cancelled on render.
-	timeout= 0, // delay, ms (default: immediately put into JS Event Queue)
-  ) => {
-	  const timeoutIdRef = useRef();
-	  const cancel = useCallback(
-		  () => {
-			  const timeoutId = timeoutIdRef.current;
-			  if (timeoutId) {
-				  timeoutIdRef.current = undefined;
-				  clearTimeout(timeoutId);
-			  }
-		  },
-		  [timeoutIdRef],
-	  );
-  
-	  useEffect(
-		  () => {
-			timeoutIdRef.current = setTimeout(callback, timeout);
-			return cancel;
-		  },
-		  [callback, timeout, cancel],
-	  );
-  
-	  return cancel;
-  }
-
 const generateInitialBoard = () => {
 	let num = Math.floor(Math.random() * 16)
 	let secondNum = num
@@ -261,6 +192,35 @@ const generateInitialBoard = () => {
 const generateRandomNum = () => {
 	const numIsTwo = Math.random() >= 0.5
 	return numIsTwo ? 2 : 4
+}
+
+const calculateGameOver = (board) => {
+	return false
+}
+
+const renderBoard = (board, move) => {
+	const newBoard = [...board]
+	for(let i=0;i<4;i++) {
+		let row = []
+		for(let j=0;j<4;j++) {
+			if (move === "left" || move === "right")
+				row.push(board[(i*4)+j])
+			if (move === "up" || move === "down")
+				row.push(board[(j*4)+i])
+		}
+		if (row != null && row.length > 0) {
+			addRow(row, move)
+			moveRow(row, move)
+		
+			for(let j=0;j<4;j++) {
+				if (move === "left" || move === "right")
+					newBoard[(i*4)+j] = row[j]
+				if (move === "up" || move === "down")
+					newBoard[(j*4)+i] = row[j]
+			}
+		}	
+	}
+	return newBoard
 }
 
 const addRow = (row, move) => {
@@ -284,10 +244,6 @@ const addRow = (row, move) => {
 	});
 	if (move === "right" || move === "down") 
 		row.reverse()
-}
-
-const calculateGameOver = (board) => {
-
 }
 
 const moveRow = (row, move) => {

@@ -12,7 +12,8 @@
     "@types/react-dom": "^16.9.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.3",
+    "react-spring": "^8.0.27",
     "tailwindcss": "^1.6.2"
   },
   "scripts": {

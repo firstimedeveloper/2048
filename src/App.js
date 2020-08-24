@@ -1,11 +1,21 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-
+// import {useSpring, animated} from 'react-spring'
 
 const Box = (props) => {
+	// const animate = useSpring({
+	// 	// config: {duration: 500},
+	// 	to: async (next) => {
+	// 		await next({opacity: 1})
+	// 	},
+	// 	// opacity: 1,
+	// 	from: { opacity: 0 },
+	// })
+	
+	// return <animated.div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2" style={animate}>{props.value}</animated.div>
+	
 	return (
-		<div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2">
-			{props.value}
-		</div>
+		
+		<div className="flex justify-center items-center w-24 h-24 bg-blue-400 text-white text-2xl border-2">{props.value}</div>
 	)
 }
 
@@ -66,7 +76,9 @@ const Board = (props) => {
 
 
 	return (
-		<div className="grid grid-cols-4">
+
+		
+		<div className="grid grid-cols-4 border-8">
 			{props.board.map((v,i) => {
 					return <Box key={i} value={v}/>
 			})}
@@ -94,20 +106,29 @@ const App = () => {
 	);
 	useEffect(() => {
 		if (wait) {
-			timeoutIdRef.current = setTimeout(() => {
-				let idx = 0
-				do {
-					idx = Math.floor(Math.random() * 16)
-				} while (board[idx] != null)
-				let num = generateRandomNum()
-				const newBoard = [...board]
-				newBoard[idx] = num
-				setWait(false)
-				setBoard(newBoard)
-			}, 500);
+			let idx = 0
+			do {
+				idx = Math.floor(Math.random() * 16)
+			} while (board[idx] != null)
+			let num = generateRandomNum()
+			const newBoard = [...board]
+			newBoard[idx] = num
+			setWait(false)
+			setBoard(newBoard)
+			// timeoutIdRef.current = setTimeout(() => {
+			// 	let idx = 0
+			// 	do {
+			// 		idx = Math.floor(Math.random() * 16)
+			// 	} while (board[idx] != null)
+			// 	let num = generateRandomNum()
+			// 	const newBoard = [...board]
+			// 	newBoard[idx] = num
+			// 	setWait(false)
+			// 	setBoard(newBoard)
+			// }, 500);
 		}
-		return cancel;
-	}, [cancel, board, wait]);	
+		//return cancel;
+	}, [board, wait]);	
 
 
 	// resets board
@@ -116,6 +137,8 @@ const App = () => {
 	}
 
 	const handleKeyDown = (e) => {
+		if (wait) 
+			return
 		switch (e.key) {
 			case "ArrowDown":
 				setDirection("down")
@@ -132,7 +155,6 @@ const App = () => {
 			default:
 				break;
 		}
-		//nextRound()
 	}
 
 	return (

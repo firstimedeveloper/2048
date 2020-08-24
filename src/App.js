@@ -268,10 +268,12 @@ const addRow = (row) => {
 			row[currentIdx] = current * 2
 			current = 0
 			currentIdx = 0
+			return
 		}
 		if (element !== null) {
 			current = element
 			currentIdx = idx
+			return
 		}
 	});
 }

@@ -92,7 +92,7 @@ const Board = (props) => {
 					row.push(props.board[(j*4)+i])
 			}
 			if (row != null && row.length > 0) {
-				addRow(row)
+				addRow(row, props.direction)
 				moveRow(row, props.direction)
 			
 				for(let j=0;j<4;j++) {
@@ -259,9 +259,11 @@ const generateRandomNum = () => {
 	return numIsTwo ? 2 : 4
 }
 
-const addRow = (row) => {
+const addRow = (row, move) => {
 	let current = 0
 	let currentIdx = 0
+	if (move === "right" || move === "down") 
+		row.reverse()
 	row.forEach((element, idx) => {
 		if (current === element) {
 			row[idx] = null
@@ -276,6 +278,12 @@ const addRow = (row) => {
 			return
 		}
 	});
+	if (move === "right" || move === "down") 
+		row.reverse()
+}
+
+const calculateGameOver = (board) => {
+	
 }
 
 const moveRow = (row, move) => {

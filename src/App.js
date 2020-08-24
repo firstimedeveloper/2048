@@ -1,6 +1,26 @@
 import React, {useState, useEffect} from 'react';
 // import {useSpring, animated} from 'react-spring'
 
+const Button = (props) => {
+	const handleClick = () => {
+		//TODO this will be the swipe actions in the future.
+			if (props.wait) {
+				return
+			}
+			props.move(props.name)
+	}
+	let color = "blue-400"
+	if (props.name === "reset") {
+		color = "red-600"
+	}
+	
+	return (
+		<button className={`py-2 px-4 bg-${color} text-white m-1`} onClick={props.handleClick? props.handleClick : handleClick}>
+			{props.name}
+		</button>
+	)
+}
+
 const Box = (props) => {
 	// const animate = useSpring({
 	// 	// config: {duration: 500},
@@ -54,37 +74,12 @@ const Box = (props) => {
 
 	return (
 		
-		<div className={`flex justify-center items-center w-24 h-24 ${color} text-white text-6xl font-semibold border-2 border-grey-200`}>{props.value}</div>
-	)
-}
-
-const Button = (props) => {
-	const handleClick = () => {
-		//TODO this will be the swipe actions in the future.
-			if (props.wait) {
-				return
-			}
-			props.move(props.name)
-	}
-	let color = "blue-400"
-	if (props.name === "reset") {
-		color = "red-600"
-	}
-	
-	return (
-		<button className={`py-2 px-4 bg-${color} text-white mx-1`} onClick={props.handleClick? props.handleClick : handleClick}>
-			{props.name}
-		</button>
+		<div className={`flex justify-center items-center w-20 h-20 md:w-24 md:h-24 ${color} text-white sm:text-2xl md:text-6xl font-semibold border-solid border border-gray-300`}>{props.value}</div>
 	)
 }
 
 const Board = (props) => {
-/* 
- 0  1  2  3
- 4  5  6  7
- 8  9  10 11
- 12 13 14 15
-*/	
+
 	if (!props.wait && props.direction !== "") {
 		const newBoard = renderBoard(props.board, props.direction)
 		if (JSON.stringify(props.board) !== JSON.stringify(newBoard)) {
@@ -162,14 +157,13 @@ const App = () => {
 	return (
 		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
 			<>
-			{!gameOver && <Board  wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
-			<div>
+			{!gameOver && <Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
+			<div className="flex flex-wrap justify-center items-center">
 				<Button name="left" move={setDirection} wait={wait}/>
 				<Button name="right" move={setDirection} wait={wait}/>
 				<Button name="up" move={setDirection} wait={wait}/>
 				<Button name="down" move={setDirection} wait={wait}/>
 				<Button name="reset" handleClick={resetGame} />
-				<Button name="next" />
 			</div>
 			</>
 		</div>

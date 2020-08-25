@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 // import {useSpring, animated} from 'react-spring'
 
 const Button = (props) => {
@@ -43,49 +43,49 @@ const Box = (props) => {
 	// })
 	
 	// return <animated.div className="flex justify-center items-center w-24 h-24 bg-gray-400 border-2" style={animate}>{props.value}</animated.div>
-	var color
+	var style
 	switch (props.value) {
 		case 2:
-			color = "bg-orange-300" 
+			style = "bg-orange-300" 
 			break;
 		case 4:
-			color = "bg-orange-400"	
+			style = "bg-orange-400"	
 			break;
 		case 8:
-			color = "bg-orange-500"
+			style = "bg-orange-500"
 			break;	
 		case 16:
-			color = "bg-red-500"
+			style = "bg-red-500"
 			break;
 		case 32:
-			color = "bg-red-600"
+			style = "bg-red-600"
 			break;
 		case 64:
-			color = "bg-red-700"
+			style = "bg-red-700"
 			break;
 		case 128:
-			color = "bg-purple-700"
+			style = "bg-purple-700 sm:text-xl md:text-4xl"
 			break;
 		case 256:
-			color = "bg-purple-800"
+			style = "bg-purple-800 sm:text-xl md:text-4xl"
 			break;
 		case 512:
-			color = "bg-yellow-400"
+			style = "bg-yellow-400 sm:text-xl md:text-4xl"
 			break;
 		case 1024:
-			color = "bg-yellow-500"
+			style = "bg-yellow-500 sm:text-xl md:text-4xl tracking-tight"
 			break;
 		case 2048:
-			color = "bg-yellow-600"
+			style = "bg-yellow-600 sm:text-xl md:text-4xl tracking-tight"
 			break;	
 		default:
-			color = "bg-grey-100"
+			style = "bg-grey-100"
 			break;
 	}
 
 	return (
 		
-		<div className={`flex justify-center items-center w-20 h-20 md:w-24 md:h-24 ${color} text-white sm:text-2xl md:text-6xl font-semibold border-solid border border-gray-300`}>{props.value}</div>
+		<div className={`flex justify-center items-center w-20 h-20 md:w-24 md:h-24 ${style} text-white sm:text-2xl md:text-6xl font-semibold border-solid border border-gray-300`}>{props.value}</div>
 	)
 }
 
@@ -113,13 +113,8 @@ const App = () => {
 	const [gameOver, setGameOver] = useState(false)
 	const [wait, setWait] = useState(false)
 
-	const gameOverRef = useRef(gameOver)
 	useEffect(() => {
-		console.log("some squares are null", gameOverRef.current)
-		if (board.every(v => v != null)) {
-			console.log("all squares not null", gameOverRef.current)
-			setGameOver(calculateGameOver(board))
-		}
+		setGameOver(calculateGameOver(board))
 	}, [board])
 	
 	useEffect(() => {
@@ -175,7 +170,7 @@ const App = () => {
 	}
 
 	return (
-		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
+		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0 bg-gray-200">
 			<>
 			{gameOver && <GameOver handleClick={resetGame}/>}
 			{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
@@ -218,13 +213,11 @@ const calculateGameOver = (board) => {
 
 	let newBoard = board
 	if (lastRound) {
-		moves.forEach(move => {
+		gameOver = moves.every(move => {
 			newBoard = renderBoard(board, move)
-			if (JSON.stringify(board) === JSON.stringify(newBoard))
-				// game is over so return true
-				gameOver = true
+			// game is over so return true
+			return (JSON.stringify(board) === JSON.stringify(newBoard))
 		})
-
 	} 
 	return gameOver
 }

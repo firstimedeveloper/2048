@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 // import {useSpring, animated} from 'react-spring'
 
 const Button = (props) => {
@@ -18,6 +18,17 @@ const Button = (props) => {
 		<button className={`py-2 px-4 bg-${color} text-white m-1`} onClick={props.handleClick? props.handleClick : handleClick}>
 			{props.name}
 		</button>
+	)
+}
+
+const GameOver = (props) => {
+	return (
+		<div className="flex justify-center w-64 flex-wrap opacity-75 bg-gray-600 border-gray-600 rounded-lg  fixed">
+			<div className="text-center text-6xl text-white">
+				Game Over
+			</div>
+			<div className="text-base"><Button name="reset" handleClick={props.handleClick} /></div>
+		</div>
 	)
 }
 
@@ -80,14 +91,7 @@ const Box = (props) => {
 
 const Board = (props) => {
 
-	if (!props.wait && props.direction !== "") {
-		const newBoard = renderBoard(props.board, props.direction)
-		if (JSON.stringify(props.board) !== JSON.stringify(newBoard)) {
-			props.setBoard(newBoard)
-			props.setWait(true)
-		}
-		props.setDirection("")
-	}
+	
 	
 
 
@@ -109,12 +113,28 @@ const App = () => {
 	const [gameOver, setGameOver] = useState(false)
 	const [wait, setWait] = useState(false)
 
-	if (calculateGameOver(board)) {
-		setGameOver(true)
-	}
+	const gameOverRef = useRef(gameOver)
+	useEffect(() => {
+		console.log("some squares are null", gameOverRef.current)
+		if (board.every(v => v != null)) {
+			console.log("all squares not null", gameOverRef.current)
+			setGameOver(calculateGameOver(board))
+		}
+	}, [board])
 	
 	useEffect(() => {
-		if (wait) {
+		if (!wait && direction !== "" && !gameOver) {
+			const newBoard = renderBoard(board, direction)
+			if (JSON.stringify(board) !== JSON.stringify(newBoard)) {
+				setBoard(newBoard)
+				setWait(true)
+			}
+			setDirection("")
+		}
+	}, [direction, board, wait, gameOver])
+
+	useEffect(() => {
+		if (wait && !gameOver) {
 			let idx = 0
 			do {
 				idx = Math.floor(Math.random() * 16)
@@ -125,7 +145,7 @@ const App = () => {
 			setWait(false)
 			setBoard(newBoard)
 		}
-	}, [board, wait]);	
+	}, [board, wait, gameOver]);	
 
 
 	// resets board
@@ -157,7 +177,8 @@ const App = () => {
 	return (
 		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0">
 			<>
-			{!gameOver && <Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
+			{gameOver && <GameOver handleClick={resetGame}/>}
+			{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
 			<div className="flex flex-wrap justify-center items-center">
 				<Button name="left" move={setDirection} wait={wait}/>
 				<Button name="right" move={setDirection} wait={wait}/>
@@ -189,7 +210,23 @@ const generateRandomNum = () => {
 }
 
 const calculateGameOver = (board) => {
-	return false
+	let gameOver = false
+
+	const lastRound = board.every(v => v != null)
+
+	const moves = ["left", "right", "up", "down"]
+
+	let newBoard = board
+	if (lastRound) {
+		moves.forEach(move => {
+			newBoard = renderBoard(board, move)
+			if (JSON.stringify(board) === JSON.stringify(newBoard))
+				// game is over so return true
+				gameOver = true
+		})
+
+	} 
+	return gameOver
 }
 
 const renderBoard = (board, move) => {

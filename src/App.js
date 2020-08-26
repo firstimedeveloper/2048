@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {useSwipeable} from 'react-swipeable'
 // import {useSpring, animated} from 'react-spring'
 
 const Button = (props) => {
@@ -113,6 +114,20 @@ const App = () => {
 	const [gameOver, setGameOver] = useState(false)
 	const [wait, setWait] = useState(false)
 
+	const slide = dir => {
+		if (!wait) {
+			setDirection(dir)
+		}		
+	  };
+	const handlers = useSwipeable({
+		onSwipedLeft: () => slide("left"),
+		onSwipedRight: () => slide("right"),
+		onSwipedUp: () => slide("up"),
+		onSwipedDown: () => slide("down"),
+		preventDefaultTouchmoveEvent: true,
+		trackMouse: false
+	})
+
 	useEffect(() => {
 		setGameOver(calculateGameOver(board))
 	}, [board])
@@ -173,14 +188,16 @@ const App = () => {
 		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0 bg-gray-200">
 			<>
 			{gameOver && <GameOver handleClick={resetGame}/>}
-			{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
-			<div className="flex flex-wrap justify-center items-center">
+			<div {...handlers}>
+				{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
+			</div>
+			{/* <div className="flex flex-wrap justify-center items-center">
 				<Button name="left" move={setDirection} wait={wait}/>
 				<Button name="right" move={setDirection} wait={wait}/>
 				<Button name="up" move={setDirection} wait={wait}/>
 				<Button name="down" move={setDirection} wait={wait}/>
 				<Button name="reset" handleClick={resetGame} />
-			</div>
+			</div> */}
 			</>
 		</div>
 	);

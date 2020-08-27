@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useSwipeable} from 'react-swipeable'
 // import {useSpring, animated} from 'react-spring'
 
@@ -22,13 +22,16 @@ const Button = (props) => {
 	)
 }
 
-const GameOver = (props) => {
+const GameOverPrompt = (props) => {
 	return (
 		<div className="flex justify-center w-64 flex-wrap opacity-75 bg-gray-600 border-gray-600 rounded-lg  fixed">
 			<div className="text-center text-6xl text-white">
-				Game Over
+				{props.name}
 			</div>
-			<div className="text-base"><Button name="reset" handleClick={props.handleClick} /></div>
+			<div className="text-base">
+				<Button name="reset" handleClick={props.handleClick} />
+				{props.name === "You won!" && <Button name="continue" handleClick={props.continueGame} />}
+			</div>
 		</div>
 	)
 }
@@ -91,14 +94,7 @@ const Box = (props) => {
 }
 
 const Board = (props) => {
-
-	
-	
-
-
-	return (
-
-		
+	return (	
 		<div className="grid grid-cols-4 border-8 border-gray-700">
 			{props.board.map((v,i) => {
 					return <Box key={i} value={v}/>
@@ -113,7 +109,9 @@ const App = () => {
 	const [direction, setDirection] = useState("")
 	const [gameOver, setGameOver] = useState(false)
 	const [wait, setWait] = useState(false)
+	const [gameWon, setGameWon] = useState(false)
 
+	const gameWonRef = useRef(gameWon)
 	const slide = dir => {
 		if (!wait) {
 			setDirection(dir)
@@ -129,10 +127,6 @@ const App = () => {
 	})
 
 	useEffect(() => {
-		setGameOver(calculateGameOver(board))
-	}, [board])
-	
-	useEffect(() => {
 		if (!wait && direction !== "" && !gameOver) {
 			const newBoard = renderBoard(board, direction)
 			if (JSON.stringify(board) !== JSON.stringify(newBoard)) {
@@ -144,7 +138,7 @@ const App = () => {
 	}, [direction, board, wait, gameOver])
 
 	useEffect(() => {
-		if (wait && !gameOver) {
+		if (wait && !gameOver && !gameWonRef.current) {
 			let idx = 0
 			do {
 				idx = Math.floor(Math.random() * 16)
@@ -155,12 +149,35 @@ const App = () => {
 			setWait(false)
 			setBoard(newBoard)
 		}
+		if (!wait && !gameOver && !gameWonRef.current)
+			setWait(false)
 	}, [board, wait, gameOver]);	
 
+	useEffect(() => {
+		if (!gameWon) {
+			if (calculateGameWon(board)) {
+				setWait(true)
+				setGameWon(true)
+				gameWonRef.current = true
+			}
+		}
+		if (calculateGameOver(board)) {
+			setGameOver(true)
+		}
+	}, [board, gameWon])
 
 	// resets board
 	const resetGame = () => {
 		setBoard(() => generateInitialBoard())
+		setGameWon(false)
+		gameWonRef.current = false
+		setGameOver(false)
+		setWait(false)
+	}
+
+	const continueGame = () => {
+		gameWonRef.current = false
+		setWait(false)
 	}
 
 	const handleKeyDown = (e) => {
@@ -187,17 +204,14 @@ const App = () => {
 	return (
 		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0 bg-gray-200">
 			<>
-			{gameOver && <GameOver handleClick={resetGame}/>}
+			{gameOver && <GameOverPrompt name={"Game Over"} handleClick={resetGame}/>}
+			{gameWonRef.current && <GameOverPrompt name={"You won!"} handleClick={resetGame} continueGame={continueGame}/>}
 			<div {...handlers}>
 				{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
 			</div>
-			{/* <div className="flex flex-wrap justify-center items-center">
-				<Button name="left" move={setDirection} wait={wait}/>
-				<Button name="right" move={setDirection} wait={wait}/>
-				<Button name="up" move={setDirection} wait={wait}/>
-				<Button name="down" move={setDirection} wait={wait}/>
+			<div className="flex flex-wrap justify-center items-center">
 				<Button name="reset" handleClick={resetGame} />
-			</div> */}
+			</div>
 			</>
 		</div>
 	);
@@ -219,6 +233,10 @@ const generateInitialBoard = () => {
 const generateRandomNum = () => {
 	const numIsTwo = Math.random() >= 0.5
 	return numIsTwo ? 2 : 4
+}
+
+const calculateGameWon = (board) => {
+	return board.some((v) => v === 2048)
 }
 
 const calculateGameOver = (board) => {

@@ -212,7 +212,7 @@ const App = () => {
 	}
 
 	return (
-		<div tabIndex={0} ref={focusRef} onKeyDown={handleKeyDown} className="flex flex-col h-screen justify-evenly items-center border-0 focus:outline-none select-none">
+		<div tabIndex={0} ref={focusRef} onKeyDown={handleKeyDown} className="flex flex-col h-screen justify-evenly items-center border-0 focus:outline-none noselect">
 			<>
 			{gameOver && <GameOverPrompt name={"Game Over"} handleClick={resetGame}/>}
 			{gameWonRef.current && <GameOverPrompt name={"You won!"} handleClick={resetGame} continueGame={continueGame}/>}

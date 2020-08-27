@@ -68,19 +68,19 @@ const Box = (props) => {
 			style = "bg-red-700"
 			break;
 		case 128:
-			style = "bg-purple-700 sm:text-xl md:text-4xl"
+			style = "bg-purple-700 sm:text-xl lg:text-4xl"
 			break;
 		case 256:
-			style = "bg-purple-800 sm:text-xl md:text-4xl"
+			style = "bg-purple-800 sm:text-xl lg:text-4xl"
 			break;
 		case 512:
-			style = "bg-yellow-400 sm:text-xl md:text-4xl"
+			style = "bg-yellow-400 sm:text-xl lg:text-4xl"
 			break;
 		case 1024:
-			style = "bg-yellow-500 sm:text-xl md:text-4xl tracking-tight"
+			style = "bg-yellow-500 sm:text-xl lg:text-4xl tracking-tight"
 			break;
 		case 2048:
-			style = "bg-yellow-600 sm:text-xl md:text-4xl tracking-tight"
+			style = "bg-yellow-600 sm:text-xl lg:text-4xl tracking-tight"
 			break;	
 		default:
 			style = "bg-grey-100"
@@ -89,13 +89,13 @@ const Box = (props) => {
 
 	return (
 		
-		<div className={`flex justify-center items-center w-20 h-20 md:w-24 md:h-24 ${style} text-white sm:text-2xl md:text-6xl font-semibold border-solid border border-gray-300`}>{props.value}</div>
+		<div className={`flex justify-center items-center w-20 h-20 lg:w-24 lg:h-24 ${style} text-white sm:text-2xl lg:text-6xl font-semibold border-solid border border-gray-300`}>{props.value}</div>
 	)
 }
 
 const Board = (props) => {
 	return (	
-		<div className="grid grid-cols-4 border-8 border-gray-700">
+		<div className="grid grid-cols-4 border-8 border-gray-700 bg-gray-200">
 			{props.board.map((v,i) => {
 					return <Box key={i} value={v}/>
 			})}
@@ -111,6 +111,8 @@ const App = () => {
 	const [wait, setWait] = useState(false)
 	const [gameWon, setGameWon] = useState(false)
 
+	const focusRef = useRef(null)
+
 	const gameWonRef = useRef(gameWon)
 	const slide = dir => {
 		if (!wait) {
@@ -125,6 +127,13 @@ const App = () => {
 		preventDefaultTouchmoveEvent: true,
 		trackMouse: false
 	})
+
+	// render when mounted
+	// this will focus the board so that users can play the game right away 
+	// using keyboard input without focusing manually
+	useEffect(() => {
+		focusRef.current.focus()
+	}, [])
 
 	useEffect(() => {
 		if (!wait && direction !== "" && !gameOver) {
@@ -199,15 +208,16 @@ const App = () => {
 			default:
 				break;
 		}
+		
 	}
 
 	return (
-		<div tabIndex="0" onKeyDown={handleKeyDown} className="flex flex-col justify-evenly items-center h-screen border-0 bg-gray-200">
+		<div tabIndex={0} ref={focusRef} onKeyDown={handleKeyDown} className="flex flex-col h-screen justify-evenly items-center border-0 focus:outline-none">
 			<>
 			{gameOver && <GameOverPrompt name={"Game Over"} handleClick={resetGame}/>}
 			{gameWonRef.current && <GameOverPrompt name={"You won!"} handleClick={resetGame} continueGame={continueGame}/>}
 			<div {...handlers}>
-				{<Board wait={wait} setWait={setWait} direction={direction} setDirection={setDirection} board={board} setBoard={setBoard}/>}
+				{<Board board={board}/>}
 			</div>
 			<div className="flex flex-wrap justify-center items-center">
 				<Button name="reset" handleClick={resetGame} />
